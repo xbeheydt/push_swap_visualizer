@@ -24,6 +24,41 @@ This is a python GUI app that helps visualize how the 42 project `push_swap` pro
 - change port of `push_swap` directly in GUI.
 - stack generator.
 
+## Installation
+
+Only dev case will be seen.
+
+**macOs install**
+
+```bash
+brew install python3
+```
+
+**debian-like install**
+
+```bash
+sudp apt update
+sudo apt install python3 python3-pip python3-venv
+```
+
+**make a virtualenv**
+
+Here we use `venv` : 
+
+```bash
+# create an environnement
+python3 -m venv .env
+
+# activate env
+source ./.env/bin/activate
+```
+
+**Install dependancies**
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 **cli**
@@ -74,3 +109,4 @@ _Stack list window_
 - FIX speed control in playback mode.
 - FIX `ValueError` in stack generator.
 - ADD `KP_Enter` for speed and frame setting.
+- ADD pydocs in all parts.
