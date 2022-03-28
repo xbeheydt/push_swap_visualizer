@@ -290,6 +290,7 @@ class PSVizConfig:
         self.__max      = self.STACK_GEN_MAX
         self.__size     = self.STACK_GEN_SIZE
         self.__speed    = self.FRAME_SPEED
+        self.__gif      = os_path.abspath("./psviz.gif")
 
         # setup and run cli argument parser
         self.parser = ArgumentParser(description=self.APP_DESC)
@@ -399,6 +400,14 @@ class PSVizConfig:
         if (not access(self.__path, X_OK)):
             self.__error("{} is not executable".format(self.__path))
             raise ValueError
+
+    @property
+    def gif_export(self) -> str:
+        return (self.__gif)
+
+    @gif_export.setter
+    def gif_export(self, path : str) -> None:
+        self.__gif = path
 
     # timeout helpers
     @property
