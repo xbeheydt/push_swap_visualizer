@@ -105,7 +105,8 @@ _Stack list window_
 
 ## TODO
 
-- implement a GIF exporter.
+- implement a GIF exporter - TODO clean setters.
+- swith player a yield generator
 - FIX speed control in playback mode.
 - FIX `ValueError` in stack generator.
 - ADD `KP_Enter` for speed and frame setting.

@@ -22,12 +22,14 @@ The original app was write by o-reo <eruaud@student.le-101.fr>.
 """
 
 from argparse   import ArgumentParser
+from io         import BytesIO
 from os         import path as os_path, access, X_OK
 from random     import shuffle
 from subprocess import STDOUT, TimeoutExpired, check_output
 from time       import sleep
 from tkinter    import *
 from typing     import Any, List
+import imageio as iio
 
 
 # Helper classes ===============================================================
@@ -115,6 +117,7 @@ class PSVizApp:
         self.__lstCmd = ["Initial State"]
         self.__isPlay = 0
         self.__winStack = 0
+        self.__winGifExport = 0
 
     def run(self) -> None:
         self.view.windowMain()
@@ -206,6 +209,27 @@ class PSVizApp:
         else:
             self.__winStack = 0
             self.view.winStack.destroy()
+    
+    def clickGifExportOpen(self) -> None:
+        if (self.__winGifExport == 0):
+            self.__winGifExport = 1
+            self.view.windowGifExport()
+        else:
+            self.__winGifExport = 0
+            self.view.winGifExport.destroy()
+
+    def clickGifExportRun(self) -> None:
+        self.view.btnPrev["state"]      = "disable"
+        self.view.btnPlay["state"]      = "disable"
+        self.view.btnNext["state"]      = "disable"
+        self.view.entFramePos["state"]  = "disable"
+        self.config.gif_export = self.view.strGifExportPath
+        self.__runPlayGif(0, self.view.frameNum)
+        self.view.btnPrev["state"]      = "normal"
+        self.view.btnPlay["state"]      = "normal"
+        self.view.btnNext["state"]      = "normal"
+        self.view.entFramePos["state"]  = "normal"
+        
 
     def clickGenerate(self) -> None:
         if (self.__isPlay == 0):
@@ -262,6 +286,21 @@ class PSVizApp:
         self.view.framePos = end
         self.eventSelectFramePos()
         self.view.drawStack(a, b)
+    
+    def __runPlayGif(self, start : int, end : int) -> None:
+        a = Stack(self.__stack.copy())
+        b = Stack()
+        frames = []
+
+        for pos in range(start, end + 1):
+            self.view.framePos = pos
+            self.eventSelectFramePos()
+            a, b = Stack.action(self.__lstCmd[pos], a, b)
+            self.view.drawStack(a, b)
+            ps = self.view.canViz.postscript(colormode="color")
+            frames.append(iio.imread(BytesIO(ps.encode("utf-8"))))
+
+        iio.mimsave(self.config.gif_export, frames)
 
 
 class PSVizConfig:
@@ -503,6 +542,8 @@ class PSVizView:
 
     BTN_CTRL_WIDTH          = 5
 
+    ENT_GIF_PATH_WIDTH      = 70
+
     def __init__(self, app : PSVizApp, config : PSVizConfig) -> None:
         # Main setup app
         self.app = app
@@ -621,14 +662,20 @@ class PSVizView:
         self.__btnStack         = Button(self.__fmtSetting,
                                         text="STACK",
                                         command=self.app.clickStack,
-                                        width=self.BTN_CTRL_WIDTH * 2,
+                                        width=self.BTN_CTRL_WIDTH,
+                                        )
+        self.__btnGitExportOpen = Button(self.__fmtSetting,
+                                        text="GIF",
+                                        command=self.app.clickGifExportOpen,
+                                        width=self.BTN_CTRL_WIDTH,
                                         )
 
         self.__fmtSetting.pack(side=BOTTOM, fill=X)
         self.__lblPath.pack(side=LEFT)
         self.__entPath.pack(side=LEFT, ipady=self.ENT_CTRL_PAD, ipadx=292)
         self.__btnRun.pack(side=LEFT)
-        self.__btnStack.pack(side=RIGHT, ipadx=14)
+        self.__btnGitExportOpen.pack(side=RIGHT)
+        self.__btnStack.pack(side=RIGHT)
 
     def windowStack(self) -> None:
         # Stack Window
@@ -706,6 +753,32 @@ class PSVizView:
         # Config scrollbars
         self.__entStackLst.config(xscrollcommand=self.__scrollStackLst.set)
         self.__scrollStackLst.config(command=self.__entStackLst.xview)
+
+    def windowGifExport(self) -> None:
+        self.__winGifExport = Toplevel(self.app.root)
+        self.__winGifExport.title("Gif Exporter")
+        self.__winGifExport.protocol("WM_DELETE_WINDOW", self.app.clickGifExportOpen)
+
+        self.__lblGifExportPath = Label(self.__winGifExport,
+                                        text="path :",
+                                        font=self.FONT_SMALL)
+        self.__strGifExportPath = StringVar(value=self.config.gif_export)
+        self.__entGifExportPath = Entry(self.__winGifExport,
+                                        textvariable=self.__strGifExportPath,
+                                        width=self.ENT_GIF_PATH_WIDTH,
+                                        )
+        self.__btnGifExportRun  = Button(self.__winGifExport,
+                                        text="RUN",
+                                        command=self.app.clickGifExportRun
+                                        )
+
+        self.__lblGifExportPath.pack(side=LEFT)
+        self.__entGifExportPath.pack(side=LEFT, fill=X)
+        self.__btnGifExportRun.pack(side=LEFT)
+
+    @property
+    def canViz(self) -> Canvas:
+        return (self.__canViz)
 
     @property
     def lstCmd(self) -> Listbox:
@@ -829,6 +902,18 @@ class PSVizView:
     def chkStackShuffle(self) -> int:
         return (self.__chkStackShuffle)
 
+    @property
+    def winGifExport(self) -> Toplevel:
+        return (self.__winGifExport)
+
+    @property
+    def strGifExportPath(self) -> str:
+        return (self.__strGifExportPath.get())
+
+    @strGifExportPath.setter
+    def strGifExportPath(self, path : str) -> None:
+        self.__strGifExportPath.set(path)
+
     # Utils methods
     def drawStack(self, a : Stack, b : Stack) -> None:
         self.__canViz.delete("all")
@@ -838,6 +923,7 @@ class PSVizView:
         hw = ww / 2
         hm = a.size() + b.size()
         mx, mn = (0, 0)
+        self.__canViz.create_rectangle(0, 0, self.CAN_WIDTH + 2, self.CAN_HEIGHT + 2, outline="", fill="black")
 
         if (hm != 0):
             mx = max(a + b)
