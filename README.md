@@ -23,7 +23,6 @@ This is a python GUI app that helps visualize how the 42 project `push_swap` pro
 - selection of frame corresponding to a `push_swap` command.
 - change port of `push_swap` directly in GUI.
 - stack generator.
-- TODO - GIF expoter
 
 ## Usage
 
