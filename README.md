@@ -66,7 +66,7 @@ _Stack list window_
 - `max` : sets max value wanted in stack.
 - `size`: sets number of element wanted in stack
 - `shuffle`: permit to generate a shuffled stack or not.
-- <kbd>GENERATE</kbd> : launch generation of a new stack. (stack generator not run or re-run in `push_swap`, please at thjis step click in main windows in the <kbd>RUN</kbd>)
+- <kbd>GENERATE</kbd> : launch generation of a new stack. (stack generator not run or re-run in `push_swap`, please at this step click in main windows in the <kbd>RUN</kbd>)
 
 ## TODO
 
