@@ -133,3 +133,8 @@ _Gif Exporter_
 - ADD pydocs in all parts.
 - ADD setting in cli for gif exporter
 - FIX resizing gif
+
+## Credits
+
+- Original forker [xbeheydt](https://github.com/xbeheydt)
+- Original writer [o-reo](https://github.com/o-reo)
