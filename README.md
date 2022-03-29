@@ -7,22 +7,36 @@ This is a python GUI app that helps visualize how the 42 project `push_swap` pro
 > python 3.8 or more version supported !
 
 **Main view**
-![PSViz App gui](images/main_gui.png)
+
+<img src="images/main_gui.png" alt="PSViz App gui" width=500>
+<!-- ![PSViz App gui](images/main_gui.png) -->
 
 **Stack list generator view**
 
-![PSViz stack list generator list](images/stack_list_gui.png)
+<img src="images/stack_list_gui.png" alt="PSViz stack list generator" width=500>
+<!-- ![PSViz stack list generator list](images/stack_list_gui.png) -->
+
+**Git exporter view**
+
+<img src="images/gif_exporter_gui.png" alt="PSViz gif exporter" width=500>
+<!-- ![PSViz gif exporter](images/gif_exporter_gui.png) -->
+
+**Yeah push_swap in action !**
+
+<img src="images/psviz.gif" alt="PSViz animated gif export" width=500>
+<!-- ![PSViz animated gif export](images/psviz.gif) -->
 
 ## Features
 
-- cli parameters.
+- cli parameters helps to pre-settings app.
 - `push_swap` launch timeout setting.
 - drawing the stack as a bar graph.
 - displays the command list produced by `push_swap`as a list.
 - playback speed configuration.
 - selection of frame corresponding to a `push_swap` command.
-- change port of `push_swap` directly in GUI.
+- change path of `push_swap` directly in GUI.
 - stack generator.
+- GIF exporter
 
 ## Installation
 
@@ -43,7 +57,7 @@ sudo apt install python3 python3-pip python3-venv
 
 **make a virtualenv**
 
-Here we use `venv` : 
+Here we use `venv` for install python dépendancies : 
 
 ```bash
 # create an environnement
@@ -103,11 +117,19 @@ _Stack list window_
 - `shuffle`: permits to generate a shuffled stack or not.
 - <kbd>GENERATE</kbd> : launch generation of a new stack. (stack generator not run or re-run in `push_swap`, please at this step click in main windows in the <kbd>RUN</kbd>)
 
+_Gif Exporter_
+
+- `FPS` : frame per second speed gif export
+- `path` : path to save gif
+- <kbd>RUN</kbd> : run and export gif
+
 ## TODO
 
-- implement a GIF exporter - TODO clean setters.
-- swith player a yield generator
+- TODO clean setters.
+- SWITCH player as a yield generator
 - FIX speed control in playback mode.
 - FIX `ValueError` in stack generator.
 - ADD `KP_Enter` for speed and frame setting.
 - ADD pydocs in all parts.
+- ADD setting in cli for gif exporter
+- FIX resizing gif
